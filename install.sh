@@ -50,6 +50,5 @@ fi
 if ! grep -q '"enabledPlugins"' "$SETTINGS"; then
   jq '. + {"enabledPlugins": {"genshijin@genshijin": true}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
 fi
-git add install.sh && git commit -m "Add genshijin plugin" && git push
 
 echo "Claude Code 設定を適用しました。"
