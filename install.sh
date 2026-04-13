@@ -31,14 +31,25 @@ if ! grep -q '"statusLine"' "$SETTINGS"; then
   jq '. + {"statusLine": {"type": "command", "command": "bash ~/.claude/statusline-command.sh"}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
 fi
 
-# デフォルトモデルを sonnet に設定                                                                                                                                                                                                                                        
+# デフォルトモデルを sonnet に設定
 if ! grep -q '"model"' "$SETTINGS"; then
-  jq '. + {"model": "sonnet"}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"                                                                                                                                                                                              
-fi                                                                                                                                                                                                                                                                        
-                                         
-# Edit/Write 後の通知フックを追加                                                                                                                                                                                                                                         
-if ! grep -q '"PostToolUse"' "$SETTINGS"; then                  
-  jq '. + {"hooks": {"PostToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "echo \"[Hook] ファイルが編集されました: $(date)\""}]}]}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"                                                          
-fi                                                                                                                                                                                                                                                                        
-                                         
+  jq '. + {"model": "opusplan"}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
+fi
+
+# Edit/Write 後の通知フックを追加
+if ! grep -q '"PostToolUse"' "$SETTINGS"; then
+  jq '. + {"hooks": {"PostToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "echo \"[Hook] ファイルが編集されました: $(date)\""}]}]}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
+fi
+
+# genshijin マーケットプレース登録
+if ! grep -q '"extraKnownMarketplaces"' "$SETTINGS"; then
+  jq '. + {"extraKnownMarketplaces": {"genshijin": {"source": {"source": "github", "repo": "InterfaceX-co-jp/genshijin"}}}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
+fi
+
+# genshijin プラグイン有効化
+if ! grep -q '"enabledPlugins"' "$SETTINGS"; then
+  jq '. + {"enabledPlugins": {"genshijin@genshijin": true}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
+fi
+git add install.sh && git commit -m "Add genshijin plugin" && git push
+
 echo "Claude Code 設定を適用しました。"
