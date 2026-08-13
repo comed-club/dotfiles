@@ -41,14 +41,4 @@ if ! grep -q '"PostToolUse"' "$SETTINGS"; then
   jq '. + {"hooks": {"PostToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "echo \"[Hook] ファイルが編集されました: $(date)\""}]}]}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
 fi
 
-# genshijin マーケットプレース登録
-if ! grep -q '"extraKnownMarketplaces"' "$SETTINGS"; then
-  jq '. + {"extraKnownMarketplaces": {"genshijin": {"source": {"source": "github", "repo": "InterfaceX-co-jp/genshijin"}}}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
-fi
-
-# genshijin プラグイン有効化
-if ! grep -q '"enabledPlugins"' "$SETTINGS"; then
-  jq '. + {"enabledPlugins": {"genshijin@genshijin": true}}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
-fi
-
 echo "Claude Code 設定を適用しました。"
